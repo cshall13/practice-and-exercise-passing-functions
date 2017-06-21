@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		
+		var apiUrl = 'https://api.themoviedb.org/3/search/movie?api_key=fec8b5ab27b292a68294261bb21b04a5&query=';
+
+		var movieApiUrl = 'https://api.themoviedb.org/3/movie';
+
+		var peopleUrl = 'https://api.themoviedb.org/3/person'
+
+		function getMovieResults(movieString){
+			// we need a promise because we have an async operation (AJAX)
+			return new Promise((resolve,reject)=>{
+				$.getJSON(apiUrl + movieString,(theData)=>{
+					resolve(theData);
+				});
+			});
+		}
+
+		function getCast(movie){
+			var movieId = movie.id;
+			return new Promise((resolve,reject)=>{
+				$.getJSON(movieApiUrl+movieId+'/credits?api_key=fec8b5ab27b292a68294261bb21b04a5',(thisMovieData)=>{
+					resolve(thisMovieData);
+				});
+			});
+
+		}
+
+		function getPerson(person){
+			var personId = person.id;
+			return new Promise((resolve,reject)=>{
+				$.getJSON(peopleUrl+personId+'?api_key=fec8b5ab27b292a68294261bb21b04a5',(thisPersonData)=>{
+					resolve(thisPersonData);
+				});
+			});
+
+		}
+
+		// promise1 is = the return of getMovie()(above). we are passing
+		// it interstellar
+		var promise1 = getMovieResults('Interstellar');
+		// .then() waits unitl makes the function wait until 
+		// theData (from above) has been resolved. then it will 
+		// run its JSON
+		// ***after the promise has run resove THEN, run the next anon function. 
+		// 	we get as a paramin the anon function, whatever resolve sent
+		promise1.then((movieJSON)=>{
+			// console.log(movieJSON);
+			// getCast above is being sent the 0th element of the 
+			// results array that we got back from the movie JSON
+			return getCast(movieJSON.results[0]);
+		}).then((castResult)=>{
+			// console.log(castResult);
+			return getPerson(castResult.cast[0]);
+		}).then((personInfo)=>{
+			console.log(personInfo);
+		})
+		// console.log(promise1);
+
+	</script>
+
+</head>
+<body>
+
+</body>
+</html>

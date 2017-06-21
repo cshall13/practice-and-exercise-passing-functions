@@ -86,6 +86,13 @@ b(3,a);			//--------- > same as function above
 
 
 
+var students = ['rissa', 'merilee', 'chris', 'stephen'];
+students.map((student,index)=>{					//--- >.map() is available to every array
+	console.log(student);
+})		
+
+
+
 
 
 
